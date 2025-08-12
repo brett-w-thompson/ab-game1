@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Annabelle's Fling Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+<script>
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  backgroundColor: '#f0f0f0',
+  physics: {
+    default: 'matter',
+    matter: {
+      gravity: { y: 1 },
+      debug: false
+    }
+  },
+  scene: {
+    preload,
+    create
+  }
+};
+
+const game = new Phaser.Game(config);
+
+function preload() {
+  this.load.image('hulk', 'https://i.imgur.com/6XvWthJ.png');     // Replace with your own!
+  this.load.image('spidey', 'https://i.imgur.com/JNOrlAs.png');   // Replace with your own!
+}
+
+function create() {
+  // Ground
+  this.matter.add.rectangle(400, 590, 800, 20, { isStatic: true });
+
+  // Add Hulk
+  const hulk = this.matter.add.image(300, 100, 'hulk').setCircle();
+  hulk.setBounce(0.9);
+  hulk.setFriction(0.005);
+  hulk.setInteractive();
+  enableDrag(this, hulk);
+
+  // Add Spidey
+  const spidey = this.matter.add.image(500, 100, 'spidey').setCircle();
+  spidey.setBounce(0.9);
+  spidey.setFriction(0.005);
+  spidey.setInteractive();
+  enableDrag(this, spidey);
+}
+
+function enableDrag(scene, obj) {
+  obj.setStatic(true);
+
+  scene.input.setDraggable(obj);
+
+  scene.input.on('dragstart', (pointer, gameObject) => {
+    if (gameObject === obj) gameObject.setStatic(true);
+  });
+
+  scene.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+    if (gameObject === obj) gameObject.setPosition(dragX, dragY);
+  });
+
+  scene.input.on('dragend', (pointer, gameObject) => {
+    if (gameObject === obj) gameObject.setStatic(false); // releases to fall/bounce
+  });
+}
+</script>
+</body>
+</html>
+
