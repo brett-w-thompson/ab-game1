@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Annabelle's Fling Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+<script>
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  backgroundColor: '#f0f0f0',
+  physics: {
+    default: 'matter',
+    matter: {
+      gravity: { y: 0 },
+      debug: false
+    }
+  },
+  scene: {
+    preload,
+    create
+  }
+};
+
+const game = new Phaser.Game(config);
+
+function preload() {
+  this.load.image('hulk', 'https://i.imgur.com/6XvWthJ.png');     // Replace with your own!
+  this.load.image('spidey', 'https://i.imgur.com/JNOrlAs.png');   // Replace with your own!
+}
+
+function create() {
+  // World bounds on all four sides (thickness = 32px walls)
+  this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 32, true, true, true, true);
+
+  // Add Hulk
+  const hulk = this.matter.add.image(300, 100, 'hulk').setCircle();
+  hulk.setBounce(0.9);
+  hulk.setFriction(0.005);
+  h
+

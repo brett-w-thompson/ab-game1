@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    const config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 200 },
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create
+        }
+    };
+
+    const game = new Phaser.Game(config);
+
+    function preload ()
+    {
+        this.load.image('spiderman', 'https://i.imgur.com/SQd9dC4.png');
+        this.load.image('hulk', 'https://i.imgur.com/1G5Z51G.png');
+    }
+
+    function create ()
+    {
+        // Create Spider-Man and Hulk heads
+        const spidey = this.physics.add.sprite(200, 200, 'spiderman');
+        const hulk = this.physics.add.sprite(500, 200, 'hulk');
+
+        // Set sprites to be interactive and draggable
+        spidey.setInteractive({ draggable: true });
+        hulk.setInteractive({ draggable: true });
+
+        // Set bounce for the sprites
+        spidey.setBounce(0.8);
+        hulk.setBounce(0.8);
+
+        // Make sprites collide with the world bounds
+        spidey.setCollideWorldBounds(true);
+        hulk.setCollideWorldBounds(true);
+        
+        // Enable collision between the two sprites
+        this.physics.add.collider(spidey, hulk);
+
+        // --- NEW: Handle drag events with momentum ---
+
+        // When dragging starts, stop the sprite's current movement
+        this.input.on('dragstart', function (pointer, gameObject) {
+            gameObject.body.setVelocity(0, 0);
+        });
+
+        // During drag, update the sprite's position to follow the pointer
+        this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
+
+        // When dragging ends, apply the pointer's velocity as momentum
+        this.input.on('dragend', function (pointer, gameObject) {
+            // Adjust this multiplier for more or less momentum
+            const momentumFactor = 50; 
+            gameObject.body.setVelocity(pointer.velocity.x * momentumFactor, pointer.velocity.y * momentumFactor);
+        });
+
+
+        // Set initial velocities for some starting movement
+        spidey.setVelocity(200, 200);
+        hulk.setVelocity(-200, 200);
+    }
+
+</script>
+
+</body>
+</html>

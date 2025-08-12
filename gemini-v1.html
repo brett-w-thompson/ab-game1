@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    const config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 200 },
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create
+        }
+    };
+
+    const game = new Phaser.Game(config);
+
+    function preload ()
+    {
+        this.load.image('spiderman', 'https://i.imgur.com/SQd9dC4.png');
+        this.load.image('hulk', 'https://i.imgur.com/1G5Z51G.png');
+    }
+
+    function create ()
+    {
+        // Create Spider-Man and Hulk heads
+        const spidey = this.physics.add.sprite(200, 200, 'spiderman');
+        const hulk = this.physics.add.sprite(500, 200, 'hulk');
+
+        // Set sprites to be interactive and draggable [10, 11]
+        spidey.setInteractive({ draggable: true });
+        hulk.setInteractive({ draggable: true });
+
+        // Set bounce for the sprites [9, 13, 25]
+        spidey.setBounce(0.8);
+        hulk.setBounce(0.8);
+
+        // Make sprites collide with the world bounds [13, 17, 25]
+        spidey.setCollideWorldBounds(true);
+        hulk.setCollideWorldBounds(true);
+        
+        //  Enable collision between the two sprites [7, 8, 9]
+        this.physics.add.collider(spidey, hulk);
+
+        // Handle dragging events [10, 11, 26]
+        this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
+
+        // Set initial velocities
+        spidey.setVelocity(200, 200);
+        hulk.setVelocity(-200, 200);
+    }
+
+</script>
+
+</body>
+</html>

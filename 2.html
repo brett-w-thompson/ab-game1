@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Annabelle's Physics Fling</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+<script>
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  backgroundColor: '#ffffff',
+  physics: {
+    default: 'matter',
+    matter: {
+      gravity: { y: 0 },
+      debug: false
+    }
+  },
+  scene: {
+    preload,
+    create,
+    update
+  }
+};
+
+const game = new Phaser.Game(config);
+
+let dragConstraint = null;
+let draggedBody = null;
+
+function preload() {
+  this.load.image('hulk', 'spiderman-v1.jpg');
+  this.load.image('spidey', 'https://i.imgur.com/JNOrlAs.png');
+}
+
+function create() {
+  // Add a ground
+  this.matter.add.rectangle(400, 590, 800, 20, { isStatic: true });
+
+  // Create two draggable characters
+  const hulk = this.matter.add.image(300, 100, 'hulk').setCircle().setBounce(0.9).setFriction(0.005);
+  const spidey = this.matter.add.image(500, 100, 'spidey').setCircle().setBounce(0.9).setFriction(0.005);
+
+  // Allow both to be interactive
+  hulk.setInteractive();
+  spidey.setInteractive();
+
+  // On pointer down, check which object is touched
+  this.input.on('pointerdown', (pointer) => {
+    const bodies = this.matter.intersectPoint(pointer.worldX, pointer.worldY);
+    if (bodies.length > 0) {
+      draggedBody = bodies[0];
+      dragConstraint = this.matter.add.worldConstraint(draggedBody, 0, 0.001, {
+        pointA: { x: pointer.worldX, y: pointer.worldY }
+      });
+    }
+  });
+
+  // Update drag position
+  this.input.on('pointermove', (pointer) => {
+    if (dragConstraint) {
+      dragConstraint.pointA.x = pointer.worldX;
+      dragConstraint.pointA.y = pointer.worldY;
+    }
+  });
+
+  // Release
+  this.input.on('pointerup', () => {
+    if (dragConstraint) {
+      this.matter.world.removeConstraint(dragConstraint);
+      dragConstraint = null;
+      draggedBody = null;
+    }
+  });
+}
+
+function update() {
+  // No update logic needed right now
+}
+</script>
+</body>
+</html>
+
