@@ -33,8 +33,10 @@
 
     function preload ()
     {
-        this.load.image('spiderman', 'https://i.imgur.com/SQd9dC4.png');
-        this.load.image('hulk', 'https://i.imgur.com/1G5Z51G.png');
+        this.load.image('spiderman', 
+            'https://images.squarespace-cdn.com/content/58e8654ce58c6214d465766a/870a0859-2617-47b5-8bc1-eb241191131f/spiderman-200x200.jpg?content-type=image%2Fjpeg'
+            );
+        this.load.image('hulk', 'https://images.squarespace-cdn.com/content/58e8654ce58c6214d465766a/e2d2f1e1-b16e-4d74-8857-9da44c266b81/green-goblin-200.png?content-type=image%2Fpng');
     }
 
     function create ()
@@ -49,7 +51,7 @@
 
         // Set bounce for the sprites
         spidey.setBounce(0.8);
-        hulk.setBounce(0.8);
+        hulk.setBounce(0.5);
 
         // Make sprites collide with the world bounds
         spidey.setCollideWorldBounds(true);
